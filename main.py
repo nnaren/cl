@@ -38,43 +38,53 @@ from strategy3 import (
     screen_strategy3_last_row,
     strategy3_calculation_report,
 )
+from strategy4 import (
+    Strategy4Params,
+    screen_strategy4_detail,
+    screen_strategy4_last_row,
+    strategy4_calculation_report,
+)
 
 _DEFAULT_EXCEL = Path(__file__).resolve().parent / "data01.xlsx"
 
 _P1 = Strategy1Params()
 _P2 = Strategy2Params()
 _P3 = Strategy3Params()
+_P4 = Strategy4Params()
 
 _SCREEN = {
     1: lambda df: screen_last_row(df, _P1),
     2: lambda df: screen_strategy2_last_row(df, _P2),
     3: lambda df: screen_strategy3_last_row(df, _P3),
+    4: lambda df: screen_strategy4_last_row(df, _P4),
 }
 _DETAIL = {
     1: lambda df: screen_detail_last_row(df, _P1),
     2: lambda df: screen_strategy2_detail(df, _P2),
     3: lambda df: screen_strategy3_detail(df, _P3),
+    4: lambda df: screen_strategy4_detail(df, _P4),
 }
 _EXPLAIN = {
     1: lambda df, title: strategy1_calculation_report(df, _P1, title=title),
     2: lambda df, title: strategy2_calculation_report(df, _P2, title=title),
     3: lambda df, title: strategy3_calculation_report(df, _P3, title=title),
+    4: lambda df, title: strategy4_calculation_report(df, _P4, title=title),
 }
-_STRATEGY_LABEL = {1: "s1", 2: "s2", 3: "s3"}
+_STRATEGY_LABEL = {1: "s1", 2: "s2", 3: "s3", 4: "s4"}
 
 
 def parse_strategies_arg(s: str) -> list[int]:
     s = s.strip().lower()
-    if s in ("all", "*", "1,2,3"):
-        return [1, 2, 3]
+    if s in ("all", "*", "1,2,3,4"):
+        return [1, 2, 3, 4]
     parts = [p.strip() for p in s.replace(";", ",").split(",") if p.strip()]
     out: list[int] = []
     for p in parts:
         if not p.isdigit():
-            raise ValueError(f"非法策略编号: {p!r}，应为 1、2、3 或逗号分隔组合")
+            raise ValueError(f"非法策略编号: {p!r}，应为 1、2、3、4 或逗号分隔组合")
         n = int(p)
-        if n not in (1, 2, 3):
-            raise ValueError(f"策略编号须为 1–3: {n}")
+        if n not in (1, 2, 3, 4):
+            raise ValueError(f"策略编号须为 1–4: {n}")
         out.append(n)
     if not out:
         raise ValueError("至少选择一种策略")
@@ -201,7 +211,7 @@ def main(argv: list[str] | None = None) -> int:
         "--strategies",
         type=str,
         default="all",
-        help='执行策略：1、2、3、逗号组合（如 1,3）、或 all（默认）',
+        help='执行策略：1、2、3、4、逗号组合（如 1,4）、或 all（默认）',
     )
     parser.add_argument(
         "--combine-mode",

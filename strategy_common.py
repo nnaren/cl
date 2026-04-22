@@ -395,6 +395,7 @@ def enrich_indicators(df: pd.DataFrame, p: IndicatorParams) -> pd.DataFrame:
     out["ma60"] = c.rolling(p.ma60, min_periods=p.ma60).mean()
     out["ma120"] = c.rolling(p.ma120, min_periods=p.ma120).mean()
     out["vol_ma5"] = vol_s.rolling(p.ma_short, min_periods=p.ma_short).mean()
+    out["vol_ma20"] = vol_s.rolling(p.ma_long, min_periods=p.ma_long).mean()
     out["vol_ma60"] = vol_s.rolling(p.ma60, min_periods=p.ma60).mean()
     out["vol_ma5_prev"] = (
         vol_s.shift(1).rolling(p.ma_short, min_periods=p.ma_short).mean()
